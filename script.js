@@ -8,6 +8,7 @@ const ramos = [
   { nombre: "Ciencias Sociales y Salud I", requisitos: [], abre: ["Ciencias Sociales y Salud II"] },
   { nombre: "Curso de Formación General", requisitos: [], abre: [] },
   { nombre: "Inglés I", requisitos: [], abre: ["Inglés II"] },
+
   { nombre: "Salud Comunitaria I", requisitos: [], abre: ["Salud Comunitaria II"] },
   { nombre: "Bioquímica", requisitos: ["Química General y Orgánica", "Biología Celular y Genética"], abre: ["Farmacología"] },
   { nombre: "Biología del Desarrollo y Embriología Humana", requisitos: ["Biología Celular y Genética"], abre: ["Obstetricia Fisiológica I", "Neonatología I"] },
@@ -17,6 +18,7 @@ const ramos = [
   { nombre: "Integración al Desempeño Profesional I", requisitos: ["Fundamentos de Enfermería I"], abre: ["Fundamentos de Enfermería II", "Obstetricia Fisiológica I", "Neonatología I"] },
   { nombre: "Curso de Formación General II", requisitos: [], abre: [] },
   { nombre: "Inglés II", requisitos: ["Inglés I"], abre: ["Inglés III"] },
+
   { nombre: "Fundamentos de Enfermería II", requisitos: ["Fisiología General", "Anatomía", "Histología", "Integración al Desempeño Profesional I"], abre: ["Integración al Desempeño Profesional II"] },
   { nombre: "Obstetricia Fisiológica I", requisitos: ["Biología del Desarrollo y Embriología Humana", "Fisiología General", "Anatomía", "Histología", "Integración al Desempeño Profesional I"], abre: ["Obstetricia Fisiológica II"] },
   { nombre: "Neonatología I", requisitos: ["Biología del Desarrollo y Embriología Humana", "Fisiología General", "Anatomía", "Histología", "Integración al Desempeño Profesional I"], abre: ["Neonatología II"] },
@@ -24,7 +26,8 @@ const ramos = [
   { nombre: "Inmunología", requisitos: ["Fisiología General"], abre: [] },
   { nombre: "Agentes Vivos de Enfermedad", requisitos: ["Fisiología General", "Anatomía", "Histología"], abre: ["Neonatología II", "Infectología"] },
   { nombre: "Ciencias Sociales y Salud II", requisitos: ["Ciencias Sociales y Salud I"], abre: ["Ciencias Sociales y Salud III"] },
-  { nombre: "Inglés III", requisitos: ["Inglés II"], abre: [] }
+  { nombre: "Inglés III", requisitos: ["Inglés II"], abre: [] },
+
   { nombre: "Neonatología II", requisitos: ["Neonatología I", "Fisiología de Sistemas", "Agentes Vivos de Enfermedad"], abre: ["Obstetricia Patológica", "Neonatología III", "Clínica de Partos I", "Clínica de Puerperio", "Clínica de Atención Primaria I", "Clínica Neonatal I"] },
   { nombre: "Obstetricia Fisiológica II", requisitos: ["Obstetricia Fisiológica I", "Fisiología de Sistemas"], abre: ["Obstetricia Patológica", "Neonatología III", "Clínica de Partos I", "Clínica de Puerperio", "Clínica de Atención Primaria I"] },
   { nombre: "Ginecología Fisiológica", requisitos: ["Fisiología de Sistemas", "Anatomía", "Histología"], abre: ["Clínica de Atención Primaria I"] },
@@ -33,6 +36,7 @@ const ramos = [
   { nombre: "Farmacología", requisitos: ["Fisiología de Sistemas", "Bioquímica"], abre: ["Obstetricia Patológica", "Neonatología III", "Clínica de Puerperio", "Clínica de Partos I", "Clínica de Atención Primaria I", "Clínica Neonatal I"] },
   { nombre: "Integración al Desempeño Profesional II", requisitos: ["Fisiología de Sistemas", "Fundamentos de Enfermería II"], abre: ["Clínica de Salud Comunitaria", "Clínica Neonatal I", "Clínica de Atención Primaria I", "Clínica de Partos I", "Clínica de Puerperio"] },
   { nombre: "Investigación en Salud I", requisitos: ["Matemáticas", "Física"], abre: ["Gestión y Liderazgo en Salud I", "Investigación en Salud II"] },
+
   { nombre: "Clínica Neonatal I", requisitos: ["Neonatología II", "Fisiopatología", "Farmacología", "Infectología", "Integración al Desempeño Profesional II"], abre: [] },
   { nombre: "Clínica de Partos I", requisitos: ["Neonatología II", "Obstetricia Fisiológica II", "Fisiopatología", "Farmacología", "Infectología", "Integración al Desempeño Profesional II"], abre: [] },
   { nombre: "Clínica de Atención Primaria I", requisitos: ["Obstetricia Fisiológica II", "Ginecología Fisiológica", "Fisiopatología", "Farmacología", "Infectología", "Integración al Desempeño Profesional II"], abre: ["Ginecología Patológica"] },
@@ -67,33 +71,76 @@ const ramos = [
   { nombre: "Seminario Unidad de Investigación II", requisitos: ["Seminario Unidad de Investigación I"], abre: [] }
 ];
 
+// Estado global de ramos aprobados
+const aprobados = new Set();
+
 const malla = document.getElementById("malla");
 
-ramos.forEach(ramo => {
-  const div = document.createElement("div");
-  div.classList.add("ramo");
-  div.textContent = ramo.nombre;
-  div.dataset.nombre = ramo.nombre;
-  if (ramo.requisitos.length > 0) div.classList.add("bloqueado");
-  malla.appendChild(div);
-});
+function crearRamos() {
+  malla.innerHTML = "";
+  ramos.forEach(ramo => {
+    const div = document.createElement("div");
+    div.classList.add("ramo");
 
-malla.addEventListener("click", e => {
-  if (!e.target.classList.contains("ramo") || e.target.classList.contains("bloqueado")) return;
-
-  e.target.classList.add("aprobado");
-
-  const nombre = e.target.dataset.nombre;
-  const desbloquea = ramos.find(r => r.nombre === nombre)?.abre || [];
-
-  desbloquea.forEach(nombreDesbloqueado => {
-    const desbloqueado = document.querySelector(`[data-nombre='${nombreDesbloqueado}']`);
+    // Si tiene requisitos, bloqueado; sino desbloqueado
+    const desbloqueado = ramo.requisitos.every(rq => aprobados.has(rq));
     if (desbloqueado) {
-      const ramoObj = ramos.find(r => r.nombre === nombreDesbloqueado);
-      if (ramoObj) {
-        ramoObj.requisitos = ramoObj.requisitos.filter(r => r !== nombre);
-        if (ramoObj.requisitos.length === 0) desbloqueado.classList.remove("bloqueado");
+      div.classList.add("desbloqueado");
+    } else {
+      div.classList.add("bloqueado");
+    }
+
+    div.textContent = ramo.nombre;
+    div.dataset.nombre = ramo.nombre;
+    malla.appendChild(div);
+  });
+}
+
+function aprobarRamo(nombre) {
+  if (aprobados.has(nombre)) return; // ya aprobado
+
+  const ramo = ramos.find(r => r.nombre === nombre);
+  if (!ramo) return;
+
+  // Verificar requisitos cumplidos
+  const requisitosCumplidos = ramo.requisitos.every(rq => aprobados.has(rq));
+  if (!requisitosCumplidos) {
+    alert(`No puedes aprobar "${nombre}" porque no tienes todos los requisitos aprobados.`);
+    return;
+  }
+
+  aprobados.add(nombre);
+  actualizarMalla();
+}
+
+function actualizarMalla() {
+  // Limpiar y recrear todo visualmente
+  malla.querySelectorAll(".ramo").forEach(div => {
+    const nombre = div.dataset.nombre;
+    div.classList.remove("bloqueado", "desbloqueado", "aprobado");
+
+    if (aprobados.has(nombre)) {
+      div.classList.add("aprobado");
+    } else {
+      const ramo = ramos.find(r => r.nombre === nombre);
+      if (ramo.requisitos.every(rq => aprobados.has(rq))) {
+        div.classList.add("desbloqueado");
+      } else {
+        div.classList.add("bloqueado");
       }
     }
   });
+}
+
+malla.addEventListener("click", e => {
+  if (!e.target.classList.contains("ramo")) return;
+
+  const nombre = e.target.dataset.nombre;
+  if (e.target.classList.contains("bloqueado")) {
+    alert("Este ramo está bloqueado. Debes aprobar los requisitos primero.");
+    return;
+  }
+  aprobarRamo(nombre);
 });
+
+crearRamos();
