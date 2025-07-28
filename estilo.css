@@ -1,44 +1,98 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #fff0f5;
-  padding: 30px;
-  text-align: center;
+  background: #fff0f6;
+  color: #660033;
+  padding: 20px;
+  user-select: none;
 }
 
 h1 {
-  color: #ad1457;
+  text-align: center;
   margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 0 1px 3px #ffa3c1;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  max-width: 1200px;
-  margin: auto;
+.semestre {
+  margin-bottom: 40px;
+}
+
+.semestre h2 {
+  margin-bottom: 15px;
+  font-size: 1.6rem;
+  color: #99004d;
+  border-bottom: 2px solid #ff66a3;
+  padding-bottom: 5px;
+}
+
+.ramos-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .ramo {
-  background-color: #f8bbd0;
-  border: 2px solid #ec407a;
-  border-radius: 12px;
-  padding: 12px;
-  color: #880e4f;
-  font-weight: bold;
-  cursor: not-allowed;
-  opacity: 0.4;
-  transition: all 0.3s ease;
+  flex: 1 0 170px;
+  max-width: 170px;
+  background: #ffb6c1;
+  border: 2px solid #ff4d94;
+  border-radius: 10px;
+  padding: 12px 10px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #4a0026;
+  cursor: pointer;
+  box-shadow: 0 2px 6px #ff99bb80;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+  text-align: center;
+  user-select: none;
+  outline-offset: 2px;
 }
 
-.ramo.habilitado {
-  cursor: pointer;
-  opacity: 1;
-  background-color: #fce4ec;
+.ramo:hover:not(.bloqueado):not(.aprobado) {
+  background: #ff66a3;
+  border-color: #cc0066;
+  color: white;
+  box-shadow: 0 4px 8px #cc006680;
 }
 
 .ramo.aprobado {
-  background-color: #ffc1e3;
-  border: 2px solid #c2185b;
-  color: #4a0033;
-  text-decoration: line-through;
+  background: #cc0066;
+  border-color: #99004d;
+  color: white;
+  cursor: default;
+  box-shadow: 0 0 12px #cc0066aa;
+}
+
+.ramo.bloqueado {
+  background: #f3e0e8;
+  border-color: #d1b7c7;
+  color: #a8909e;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.ramo:focus-visible {
+  outline: 3px solid #ff66a3;
+  outline-offset: 3px;
+}
+
+/* Responsive */
+@media (max-width: 550px) {
+  .ramo {
+    flex: 1 0 100%;
+    max-width: 100%;
+  }
 }
